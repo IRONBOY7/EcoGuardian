@@ -1,0 +1,126 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile of EcoGuardian platform (citizen, collection company, or authority)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique Firebase Auth UID"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "User's full display name"
+        },
+        "email": {
+          "type": "string",
+          "description": "The user's registered email address"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["citizen", "company", "admin"],
+          "description": "User tier"
+        },
+        "ecoPoints": {
+          "type": "number",
+          "description": "Current EcoPoints score"
+        },
+        "EcoPoints": {
+          "type": "number",
+          "description": "Duplicate casing field to support multiple components"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "User creation date ISO"
+        },
+        "accountCreationTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "User creation timestamp duplicate"
+        },
+        "profileCompleted": {
+          "type": "boolean",
+          "description": "Profile completions state"
+        },
+        "profileCompletionStatus": {
+          "type": "boolean",
+          "description": "Duplicate completion status field"
+        }
+      },
+      "required": ["name", "email", "role"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Hazard, waste, or litter incident report submitted by a citizen",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 150
+        },
+        "description": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "severity": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["Pending", "Assigned", "Completed"]
+        },
+        "reporterName": {
+          "type": "string"
+        },
+        "reporterEmail": {
+          "type": "string"
+        },
+        "ecoPointsAwarded": {
+          "type": "number"
+        },
+        "dateSubmitted": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dateCompleted": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "imageUrl": {
+          "type": "string"
+        },
+        "completionImageUrl": {
+          "type": "string"
+        },
+        "assignedCompanyId": {
+          "type": "string"
+        },
+        "assignedCompanyName": {
+          "type": "string"
+        },
+        "completionNotes": {
+          "type": "string"
+        }
+      },
+      "required": ["title", "description", "category", "severity", "status"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profile collection"
+    },
+    "reports/{reportId}": {
+      "schema": "Report",
+      "description": "Citizen reports collection"
+    }
+  }
+}

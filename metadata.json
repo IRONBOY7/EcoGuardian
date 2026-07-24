@@ -1,0 +1,6 @@
+{
+  "name": "EcoGuardian",
+  "description": "EcoGuardian is an AI-powered smart waste management and environmental monitoring platform that helps citizens report issues, waste companies manage collections, and administrators monitor compliance and analytics.",
+  "requestFramePermissions": ["geolocation", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

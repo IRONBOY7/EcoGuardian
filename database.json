@@ -1,0 +1,297 @@
+{
+  "users": [
+    {
+      "id": "u-admin",
+      "email": "admin@ecoguardian.org",
+      "password": "admin123",
+      "name": "Sophia Martinez",
+      "role": "admin",
+      "ecoPoints": 0
+    },
+    {
+      "id": "u-company-1",
+      "email": "collector@ecoguardian.org",
+      "password": "collector123",
+      "name": "EcoClean Solutions Ltd.",
+      "role": "company",
+      "ecoPoints": 0
+    },
+    {
+      "id": "u-company-2",
+      "email": "greenroute@ecoguardian.org",
+      "password": "greenroute123",
+      "name": "GreenRoute Recycling Services",
+      "role": "company",
+      "ecoPoints": 0
+    },
+    {
+      "id": "u-citizen-1",
+      "email": "citizen@ecoguardian.org",
+      "password": "citizen123",
+      "name": "Alex Johnson",
+      "role": "citizen",
+      "ecoPoints": 350
+    },
+    {
+      "id": "u-citizen-2",
+      "email": "jane.doe@example.com",
+      "password": "password123",
+      "name": "Jane Doe",
+      "role": "citizen",
+      "ecoPoints": 120
+    }
+  ],
+  "reports": [
+    {
+      "id": "r-101",
+      "title": "Overflowing Plastic Container Bin",
+      "description": "The public recycling bin in Central Park near the fountain has been overflowing for three days now. Wind is spreading plastic bottles across the lawn area.",
+      "category": "Plastic Waste",
+      "severity": "Medium",
+      "status": "Completed",
+      "location": {
+        "lat": 37.7749,
+        "lng": -122.4194,
+        "address": "Central Park East Fountain, San Francisco, CA"
+      },
+      "reporterName": "Alex Johnson",
+      "reporterEmail": "citizen@ecoguardian.org",
+      "ecoPointsAwarded": 30,
+      "dateSubmitted": "2026-07-15T09:30:00Z",
+      "dateCompleted": "2026-07-16T14:45:00Z",
+      "imageUrl": "https://images.unsplash.com/photo-1530587191325-3db32d826c18?auto=format&fit=crop&q=80&w=600",
+      "completionImageUrl": "https://images.unsplash.com/photo-1606166325683-e6deb697d30e?auto=format&fit=crop&q=80&w=600",
+      "assignedCompanyId": "u-company-1",
+      "assignedCompanyName": "EcoClean Solutions Ltd.",
+      "completionNotes": "Cleared out the container and cleaned the surrounding grass area. Placed secondary temporary collection bag."
+    },
+    {
+      "id": "r-102",
+      "title": "Illegal Electronic Waste Dumping",
+      "description": "Multiple old CRT monitors, printers, and tangled cables have been dumped on the side of the gravel access road behind the technology center.",
+      "category": "Electronic Waste",
+      "severity": "High",
+      "status": "Assigned",
+      "location": {
+        "lat": 37.7833,
+        "lng": -122.4167,
+        "address": "Tech Hub Alleyway 4, San Francisco, CA"
+      },
+      "reporterName": "Jane Doe",
+      "reporterEmail": "jane.doe@example.com",
+      "ecoPointsAwarded": 50,
+      "dateSubmitted": "2026-07-18T11:15:00Z",
+      "imageUrl": "https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&q=80&w=600",
+      "assignedCompanyId": "u-company-1",
+      "assignedCompanyName": "EcoClean Solutions Ltd."
+    },
+    {
+      "id": "r-103",
+      "title": "Discarded Car Battery on Footpath",
+      "description": "A heavy-duty commercial car battery was left right next to the neighborhood sidewalk. Acid looks like it could leak if it rains.",
+      "category": "Hazardous Waste",
+      "severity": "High",
+      "status": "Pending",
+      "location": {
+        "lat": 37.7699,
+        "lng": -122.4468,
+        "address": "415 Stanyan St, San Francisco, CA"
+      },
+      "reporterName": "Alex Johnson",
+      "reporterEmail": "citizen@ecoguardian.org",
+      "ecoPointsAwarded": 50,
+      "dateSubmitted": "2026-07-19T16:00:00Z",
+      "imageUrl": "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&q=80&w=600"
+    },
+    {
+      "id": "r-104",
+      "title": "Piles of Rotting Cardboard",
+      "description": "Large stack of cardboard boxes has been discarded behind the commercial strip. They are getting wet and starting to rot, attracting pests.",
+      "category": "Organic Waste",
+      "severity": "Low",
+      "status": "Pending",
+      "location": {
+        "lat": 37.7599,
+        "lng": -122.4368,
+        "address": "24th St & Mission St, San Francisco, CA"
+      },
+      "reporterName": "Jane Doe",
+      "reporterEmail": "jane.doe@example.com",
+      "ecoPointsAwarded": 20,
+      "dateSubmitted": "2026-07-20T01:10:00Z",
+      "imageUrl": "https://images.unsplash.com/photo-1595275313393-8f64a78a632c?auto=format&fit=crop&q=80&w=600"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "a-1",
+      "title": "Annual Community Recycling Drive",
+      "content": "Join us this Saturday at the City Hall Parking Lot from 9 AM to 3 PM. Bring your old electronics, paint cans, and plastics. Earn double EcoPoints!",
+      "category": "Event",
+      "date": "2026-07-19",
+      "author": "Sophia Martinez"
+    },
+    {
+      "id": "a-2",
+      "title": "Hazardous Materials Policy Update",
+      "content": "All electronic waste and heavy chemicals must now be flagged immediately as 'Hazardous'. Our collection teams have been equipped with appropriate safety suits.",
+      "category": "Update",
+      "date": "2026-07-17",
+      "author": "Sophia Martinez"
+    },
+    {
+      "id": "a-3",
+      "title": "Heat Wave Warning & Collection Schedule",
+      "content": "Due to the heatwave, daytime recycling collections will begin 2 hours earlier (at 5:00 AM) to ensure collector safety. Please have bins ready by Friday night.",
+      "category": "Alert",
+      "date": "2026-07-20",
+      "author": "Sophia Martinez"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "n-1",
+      "userId": "u-citizen-1",
+      "title": "EcoPoints Earned",
+      "message": "You earned 30 EcoPoints for resolving the 'Overflowing Plastic Container Bin' report!",
+      "type": "points",
+      "date": "2026-07-16T14:45:00Z",
+      "read": false
+    },
+    {
+      "id": "n-2",
+      "userId": "u-citizen-1",
+      "title": "New Announcement",
+      "message": "Annual Community Recycling Drive is scheduled for this Saturday! Earn double points.",
+      "type": "announcement",
+      "date": "2026-07-19T10:00:00Z",
+      "read": false
+    },
+    {
+      "id": "n-3",
+      "userId": "u-company-1",
+      "title": "New Job Assignment",
+      "message": "New high-priority report 'Illegal Electronic Waste Dumping' is assigned to your collection company.",
+      "type": "assignment",
+      "date": "2026-07-18T11:15:00Z",
+      "read": false
+    }
+  ],
+  "rewards": [
+    {
+      "id": "rew-1",
+      "title": "$10 Eco-Store Voucher",
+      "description": "Redeemable at participating green grocers and organic cooperatives.",
+      "pointsCost": 100,
+      "category": "vouchers",
+      "available": true
+    },
+    {
+      "id": "rew-2",
+      "title": "Stainless Steel Reusable Bottle",
+      "description": "Vacuum insulated, high grade 750ml steel flask with bamboo cap.",
+      "pointsCost": 200,
+      "category": "merchandise",
+      "available": true
+    },
+    {
+      "id": "rew-3",
+      "title": "Plant a Tree in Sector 4",
+      "description": "We will plant an indigenous evergreen tree in Sector 4 on your behalf and send a coordinate certificate.",
+      "pointsCost": 150,
+      "category": "tree-planting",
+      "available": true
+    }
+  ],
+  "communities": [
+    {
+      "id": "comm-1",
+      "name": "Green Valley District",
+      "points": 1450,
+      "rank": 1,
+      "memberCount": 152,
+      "environmentalScore": 94,
+      "activeCampaigns": [
+        "Plastic-Free July",
+        "Sector 4 Re-greening"
+      ]
+    },
+    {
+      "id": "comm-2",
+      "name": "Stonehill Heights",
+      "points": 980,
+      "rank": 2,
+      "memberCount": 98,
+      "environmentalScore": 86,
+      "activeCampaigns": [
+        "Zero-Waste Neighborhoods"
+      ]
+    },
+    {
+      "id": "comm-3",
+      "name": "Harbor Bay Community",
+      "points": 620,
+      "rank": 3,
+      "memberCount": 74,
+      "environmentalScore": 78,
+      "activeCampaigns": [
+        "Coastal Trash Cleanups"
+      ]
+    }
+  ],
+  "recycling_centers": [
+    {
+      "id": "rc-1",
+      "name": "Downtown Recycling Depot",
+      "address": "150 Harrison St, San Francisco, CA 94105",
+      "phone": "(415) 555-0199",
+      "types": [
+        "Plastics",
+        "Aluminum Cans",
+        "Cardboard",
+        "Glass"
+      ],
+      "hours": "Mon-Sat: 8:00 AM - 6:00 PM",
+      "mapsUrl": "https://maps.google.com/?q=Downtown+Recycling+Depot+San+Francisco"
+    },
+    {
+      "id": "rc-2",
+      "name": "Bay Area Electronic Waste Solutions",
+      "address": "2450 17th St, San Francisco, CA 94110",
+      "phone": "(415) 555-0244",
+      "types": [
+        "Computers",
+        "Printers",
+        "Batteries",
+        "Mercury Thermostats"
+      ],
+      "hours": "Tue-Sun: 9:00 AM - 5:00 PM",
+      "mapsUrl": "https://maps.google.com/?q=Bay+Area+Electronic+Waste+Solutions+San+Francisco"
+    },
+    {
+      "id": "rc-3",
+      "name": "Mission District Organics & Compost Center",
+      "address": "1230 Treat Ave, San Francisco, CA 94110",
+      "phone": "(415) 555-0311",
+      "types": [
+        "Yard Trimmings",
+        "Food Waste",
+        "Rotting Cardboard",
+        "Wood Chips"
+      ],
+      "hours": "Mon-Fri: 7:00 AM - 4:00 PM",
+      "mapsUrl": "https://maps.google.com/?q=Mission+District+Organics+Compost+San+Francisco"
+    }
+  ],
+  "collector_assignments": [
+    {
+      "id": "ca-1",
+      "reportId": "r-102",
+      "reportTitle": "Illegal Electronic Waste Dumping",
+      "companyId": "u-company-1",
+      "companyName": "EcoClean Solutions Ltd.",
+      "status": "active",
+      "assignedDate": "2026-07-18T11:15:00Z"
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global authentication & role helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function getUserData() {
+      return isSignedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) ?
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data : {};
+    }
+
+    function getUserRole() {
+      return 'role' in getUserData() ? getUserData().role : 'citizen';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        getUserRole() == 'admin' ||
+        ('email' in request.auth.token && (
+          request.auth.token.email.lower() == 'admin@ecoguardian.org' ||
+          request.auth.token.email.lower() == 'issakaayisha761@gmail.com'
+        ))
+      );
+    }
+
+    function isCollector() {
+      return isSignedIn() && (
+        getUserRole() == 'company' || 
+        getUserRole() == 'collector' ||
+        ('email' in request.auth.token && (
+          request.auth.token.email.lower() == 'collector@ecoguardian.org' || 
+          request.auth.token.email.lower() == 'greenroute@ecoguardian.org' ||
+          request.auth.token.email.lower().matches('.*collector.*') ||
+          request.auth.token.email.lower().matches('.*company.*')
+        ))
+      );
+    }
+
+    function isReportAssignedToCollector(repData) {
+      return isCollector() && (
+        ('assignedCollectorUid' in repData && repData.assignedCollectorUid == request.auth.uid) ||
+        ('assignedCompanyId' in repData && repData.assignedCompanyId == request.auth.uid) ||
+        ('assignedCollectorId' in repData && repData.assignedCollectorId == request.auth.uid) ||
+        ('assignedCompanyId' in repData && repData.assignedCompanyId == 'usr_002') ||
+        ('assignedCollectorId' in repData && repData.assignedCollectorId == 'usr_002') ||
+        ('email' in request.auth.token && (
+          ('assignedCollectorEmail' in repData && repData.assignedCollectorEmail == request.auth.token.email) ||
+          request.auth.token.email.lower() == 'collector@ecoguardian.org' ||
+          request.auth.token.email.lower() == 'greenroute@ecoguardian.org'
+        ))
+      );
+    }
+
+    // Users Collection rules
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && (isOwner(userId) || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Reports Collection rules
+    match /reports/{reportId} {
+      // Read: Admins, Report Owners, or Collectors (assigned or searching available reports)
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        (resource != null && 'reporterId' in resource.data && resource.data.reporterId == request.auth.uid) ||
+        (resource != null && 'reporterEmail' in resource.data && 'email' in request.auth.token && resource.data.reporterEmail == request.auth.token.email) ||
+        isCollector()
+      );
+
+      // Create: Authenticated citizens / users
+      allow create: if isSignedIn();
+
+      // Update: Admins, Report Owners (citizens), or Collectors accepting/updating assigned reports
+      allow update: if isSignedIn() && (
+        isAdmin() ||
+        (resource != null && 'reporterId' in resource.data && resource.data.reporterId == request.auth.uid) ||
+        (resource != null && 'reporterEmail' in resource.data && 'email' in request.auth.token && resource.data.reporterEmail == request.auth.token.email) ||
+        (isCollector() && (
+          isReportAssignedToCollector(resource.data) ||
+          isReportAssignedToCollector(request.resource.data)
+        ))
+      );
+
+      // Delete: Only Admins or Report Creators
+      allow delete: if isAdmin() || (resource != null && 'reporterId' in resource.data && resource.data.reporterId == request.auth.uid);
+    }
+
+    // Announcements Collection
+    match /announcements/{announcementId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Notifications Collection
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Rewards Collection
+    match /rewards/{rewardId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Communities Collection
+    match /communities/{communityId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // Recycling Centers Collection
+    match /recycling_centers/{centerId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Collector Assignments Collection
+    match /collector_assignments/{assignmentId} {
+      allow read: if isSignedIn() && (
+        isAdmin() ||
+        isCollector() ||
+        (resource != null && 'collectorUid' in resource.data && resource.data.collectorUid == request.auth.uid)
+      );
+      allow write: if isSignedIn() && (
+        isAdmin() ||
+        isCollector()
+      );
+    }
+  }
+}
