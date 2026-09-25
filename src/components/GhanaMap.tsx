@@ -12,7 +12,10 @@ import {
   CheckCircle2,
   X,
   Layers,
-  Info
+  Info,
+  Globe,
+  ExternalLink,
+  ShieldCheck
 } from "lucide-react";
 import {
   GHANA_CAPITAL,
@@ -49,6 +52,14 @@ const createCustomIcon = (color: string, labelSymbol: string = "") => {
     iconAnchor: [16, 16]
   });
 };
+
+// Google Earth Engine satellite access gate constants
+const EARTH_ENGINE_STORAGE_KEY = "ecoGuardianEarthEngineAccessGranted";
+const EARTH_ENGINE_SIGNUP_URL = "https://signup.earthengine.google.com/";
+const SATELLITE_TILE_URL =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+const SATELLITE_ATTRIBUTION =
+  'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community | EcoGuardian Ghana';
 
 const userLocationIcon = L.divIcon({
   className: "custom-user-marker",
@@ -114,6 +125,8 @@ export const GhanaMap: React.FC<GhanaMapProps> = ({
   const reportsLayerRef = useRef<L.LayerGroup | null>(null);
   const centersLayerRef = useRef<L.LayerGroup | null>(null);
   const vehiclesLayerRef = useRef<L.LayerGroup | null>(null);
+  const osmLayerRef = useRef<L.TileLayer | null>(null);
+  const satelliteLayerRef = useRef<L.TileLayer | null>(null);
 
   // States
   const [currentLat, setCurrentLat] = useState<number>(
@@ -138,6 +151,19 @@ export const GhanaMap: React.FC<GhanaMapProps> = ({
   const [locationStatusType, setLocationStatusType] = useState<"success" | "error" | "info" | null>(null);
 
   const [mapLayerFilter, setMapLayerFilter] = useState<"all" | "incidents" | "centers" | "trucks">("all");
+
+  // Google Earth Engine access gate state. Satellite imagery is only available
+  // to users who have created (or already have) a Google Earth Engine account.
+  const [showEarthEngineModal, setShowEarthEngineModal] = useState(false);
+  const [acknowledgeHasAccount, setAcknowledgeHasAccount] = useState(false);
+  const [isSatelliteLayer, setIsSatelliteLayer] = useState(false);
+  const [earthEngineConfirmed, setEarthEngineConfirmed] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem(EARTH_ENGINE_STORAGE_KEY) === "true";
+    } catch {
+      return false;
+    }
+  });
 
   // Reverse Geocoding helper
   const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
@@ -185,11 +211,14 @@ export const GhanaMap: React.FC<GhanaMapProps> = ({
       zoomControl: true
     });
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | EcoGuardian Ghana',
-      maxZoom: 19
-    }).addTo(map);
+    osmLayerRef.current = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | EcoGuardian Ghana',
+        maxZoom: 19
+      }
+    ).addTo(map);
 
     // Initialize layer groups
     reportsLayerRef.current = L.layerGroup().addTo(map);
@@ -518,6 +547,52 @@ export const GhanaMap: React.FC<GhanaMapProps> = ({
     });
   };
 
+  // Google Earth Engine access gate. Every user who clicks the Google Earth
+  // satellite view must create an Earth Engine account before access is granted.
+  const handleGoogleEarthClick = () => {
+    if (earthEngineConfirmed) {
+      toggleSatelliteLayer();
+    } else {
+      setShowEarthEngineModal(true);
+    }
+  };
+
+  const grantEarthEngineAccess = () => {
+    try {
+      window.localStorage.setItem(EARTH_ENGINE_STORAGE_KEY, "true");
+    } catch (err) {
+      console.warn("Unable to persist Earth Engine access state:", err);
+    }
+    setEarthEngineConfirmed(true);
+    setShowEarthEngineModal(false);
+    setAcknowledgeHasAccount(false);
+    if (!isSatelliteLayer) {
+      toggleSatelliteLayer();
+    }
+  };
+
+  const toggleSatelliteLayer = () => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    if (isSatelliteLayer) {
+      satelliteLayerRef.current?.remove();
+      satelliteLayerRef.current = null;
+      if (osmLayerRef.current) {
+        osmLayerRef.current.addTo(map);
+      }
+      setIsSatelliteLayer(false);
+    } else {
+      if (osmLayerRef.current) {
+        osmLayerRef.current.remove();
+      }
+      satelliteLayerRef.current = L.tileLayer(SATELLITE_TILE_URL, {
+        attribution: SATELLITE_ATTRIBUTION,
+        maxZoom: 19
+      }).addTo(map);
+      setIsSatelliteLayer(true);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Top Controls & Location Action Bar */}
@@ -686,6 +761,35 @@ export const GhanaMap: React.FC<GhanaMapProps> = ({
           ))}
         </div>
 
+        {/* Google Earth / Earth Engine Satellite Toggle */}
+        <div className="absolute top-3 left-3 z-[1000]">
+          <button
+            type="button"
+            onClick={handleGoogleEarthClick}
+            className={`flex items-center space-x-1.5 px-3 py-2 rounded-2xl text-xs font-bold shadow-md border transition-all cursor-pointer ${
+              isSatelliteLayer
+                ? "bg-emerald-700 text-white border-emerald-800"
+                : earthEngineConfirmed
+                ? "bg-white/95 text-emerald-800 border-emerald-200 hover:bg-emerald-50"
+                : "bg-white/95 text-stone-700 border-stone-200 hover:bg-amber-50"
+            }`}
+            title={
+              earthEngineConfirmed
+                ? "Toggle Google Earth satellite imagery"
+                : "An Earth Engine account is required to access satellite imagery"
+            }
+          >
+            {earthEngineConfirmed ? (
+              <Globe className="w-4 h-4" />
+            ) : (
+              <ShieldCheck className="w-4 h-4 text-amber-600" />
+            )}
+            <span>
+              {isSatelliteLayer ? "Earth Engine: ON" : "Google Earth View"}
+            </span>
+          </button>
+        </div>
+
         {/* Leaflet Map DOM mount point */}
         <div ref={mapContainerRef} className={`w-full ${heightClass} z-0`} />
 
@@ -709,6 +813,81 @@ export const GhanaMap: React.FC<GhanaMapProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Earth Engine Account Required Modal */}
+      {showEarthEngineModal && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+          <div className="bg-white dark:bg-stone-900 rounded-3xl border border-stone-200 dark:border-stone-700 shadow-2xl w-full max-w-lg p-6 relative">
+            <button
+              type="button"
+              onClick={() => setShowEarthEngineModal(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-xl text-stone-400 hover:text-stone-600 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors cursor-pointer"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-emerald-600 text-white p-3 rounded-2xl">
+                <Globe className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-base font-extrabold text-stone-900 dark:text-stone-100">
+                  Google Earth Engine Account Required
+                </h3>
+                <p className="text-[10px] font-mono uppercase tracking-wider text-stone-400">
+                  Satellite access verification
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed mb-4">
+              To access the <strong>Google Earth satellite view</strong> of Ghana, every user
+              must first create a free <strong>Google Earth Engine</strong> account. Earth Engine
+              is used to load live satellite imagery and change-detection layers across the map.
+            </p>
+
+            <a
+              href={EARTH_ENGINE_SIGNUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3 rounded-2xl transition-all mb-3"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>Create a Free Earth Engine Account</span>
+            </a>
+
+            <div className="flex items-center gap-3 my-4">
+              <div className="h-px bg-stone-200 dark:bg-stone-700 flex-1" />
+              <span className="text-[10px] font-mono uppercase text-stone-400">or</span>
+              <div className="h-px bg-stone-200 dark:bg-stone-700 flex-1" />
+            </div>
+
+            <label className="flex items-start space-x-2.5 mb-4 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={acknowledgeHasAccount}
+                onChange={(e) => setAcknowledgeHasAccount(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-emerald-600 cursor-pointer"
+              />
+              <span className="text-[11px] text-stone-600 dark:text-stone-300 leading-relaxed">
+                I already have a Google Earth Engine account and understand satellite imagery
+                access is restricted to registered Earth Engine users.
+              </span>
+            </label>
+
+            <button
+              type="button"
+              disabled={!acknowledgeHasAccount}
+              onClick={grantEarthEngineAccess}
+              className="w-full bg-stone-900 dark:bg-stone-100 hover:bg-stone-800 dark:hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed text-white dark:text-stone-900 font-bold text-xs py-3 rounded-2xl transition-all flex items-center justify-center space-x-2"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Access Satellite View</span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
