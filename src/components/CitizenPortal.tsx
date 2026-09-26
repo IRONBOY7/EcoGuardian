@@ -6,13 +6,14 @@ import {
   Trash2, Plus, Info, Check, Link, ArrowRight, ExternalLink,
   Flame, HelpCircle, Trophy, BookOpen, Volume2, VolumeX, Mail, CheckCircle2, XCircle, Leaf,
   BellRing, Compass, ShieldCheck, Heart, Users, ChevronRight, Send, HelpCircle as QuestionIcon,
-  Mic, MicOff, Radio, Languages
+  Mic, MicOff, Radio, Languages, Satellite
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { toast } from "sonner";
 import ChatBotPanel from "./ChatBotPanel";
 import { uploadFileToStorage, dbService, auth } from "../firebase";
 import { GhanaMap } from "./GhanaMap";
+import { MonitoringCoverage } from "./MonitoringCoverage";
 import { GHANA_CAPITAL, DEFAULT_GHANA_RECYCLING_CENTERS } from "../data/ghanaLocations";
 import { GhanaianVoiceReporter } from "./GhanaianVoiceReporter";
 
@@ -120,7 +121,7 @@ export default function CitizenPortal({
   announcements = []
 }: CitizenPortalProps) {
   // Navigation State (8 Core Tabs)
-  const [activeTab, setActiveTab] = useState<"home" | "reports" | "scanner" | "map" | "rewards" | "notifications" | "profile" | "settings">("home");
+  const [activeTab, setActiveTab] = useState<"home" | "reports" | "scanner" | "map" | "coverage" | "rewards" | "notifications" | "profile" | "settings">("home");
 
   // Rotating environmental tip
   const [tipIndex, setTipIndex] = useState(0);
@@ -808,6 +809,7 @@ export default function CitizenPortal({
             {renderDrawerButton("reports", "Incident Logs", <FileText className="w-4 h-4" />)}
             {renderDrawerButton("scanner", "AI Waste Scanner", <Camera className="w-4 h-4" />)}
             {renderDrawerButton("map", "Interactive EcoMap", <Map className="w-4 h-4" />)}
+            {renderDrawerButton("coverage", "Monitoring Coverage", <Satellite className="w-4 h-4" />)}
             {renderDrawerButton("rewards", "EcoRewards & Quiz", <Award className="w-4 h-4" />)}
             {renderDrawerButton("notifications", "Bulletins & Alerts", <Bell className="w-4 h-4" />)}
             {renderDrawerButton("profile", "User Profile", <UserIcon className="w-4 h-4" />)}
@@ -1966,6 +1968,21 @@ export default function CitizenPortal({
             )}
 
             {/* ---------------------------------------------------------------------
+                TAB: MONITORING COVERAGE (prototype satellite-monitoring overview)
+                --------------------------------------------------------------------- */}
+            {activeTab === "coverage" && (
+              <motion.div
+                key="coverage-tab"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="space-y-6"
+              >
+                <MonitoringCoverage />
+              </motion.div>
+            )}
+
+            {/* ---------------------------------------------------------------------
                 TAB 5: REWARDS & INTERACTIVE ECO QUIZZES
                 --------------------------------------------------------------------- */}
             {activeTab === "rewards" && (
@@ -2644,6 +2661,7 @@ export default function CitizenPortal({
         {renderBottomNavButton("reports", "Reports", <FileText className="w-4 h-4" />)}
         {renderBottomNavButton("scanner", "Scanner", <Camera className="w-4 h-4" />)}
         {renderBottomNavButton("map", "Map", <Map className="w-4 h-4" />)}
+        {renderBottomNavButton("coverage", "Coverage", <Satellite className="w-4 h-4" />)}
         {renderBottomNavButton("rewards", "Rewards", <Award className="w-4 h-4" />)}
         {renderBottomNavButton("profile", "Profile", <UserIcon className="w-4 h-4" />)}
       </div>

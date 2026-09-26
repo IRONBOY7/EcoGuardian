@@ -1,11 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* Small labels across the app use font-mono classes; route them to Inter
+     so the whole platform shares one professional text face. */
+  --font-mono: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Re-route colors for the Bento Grid Theme */
   --color-slate-50: #f5f5f4; /* stone-50 */
@@ -40,6 +43,16 @@
   /* Custom shadows */
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 6px -1px rgba(0, 0, 0, 0.01), 0 2px 4px 0 rgba(0, 0, 0, 0.01);
   --shadow-md: 0 4px 10px -1px rgba(0, 0, 0, 0.03), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+/* Professional environmental typography:
+   Space Grotesk for major headings, dashboard numbers and section titles;
+   Inter (600/700 via existing utility classes) for navigation, buttons,
+   body text and small labels. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
 }
 
 /* Global Dark Mode Color Palette Overrides & Base Styles */
