@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -35,10 +35,11 @@
   --color-gray-900: #1c1917; /* stone-900 */
   --color-gray-950: #0c0a09; /* stone-950 */
 
-  /* Precise Bento Grid rounded bounds */
-  --radius-3xl: 1.5rem;
-  --radius-2xl: 1rem;
-  --radius-xl: 0.75rem;
+  /* Rounded bounds aligned with the EcoGuard Ghana v1.1 prototype
+     (cards 10–13px, large panels 18–22px) */
+  --radius-3xl: 1rem;
+  --radius-2xl: 0.75rem;
+  --radius-xl: 0.625rem;
 
   /* Custom shadows */
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 6px -1px rgba(0, 0, 0, 0.01), 0 2px 4px 0 rgba(0, 0, 0, 0.01);
@@ -168,6 +169,107 @@ html.dark body {
 .dark .shadow-lg,
 .dark .shadow-xl {
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ===========================================================================
+   EcoGuard Ghana v1.1 prototype design helpers (radar hero, scan bars,
+   before/after mock imagery) — shared by the citizen portal landing
+   sections and the Monitoring Coverage view.
+   =========================================================================== */
+@keyframes eg-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.eg-radar {
+  width: 170px;
+  height: 170px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  border: 1px solid #7ed95755;
+  background: repeating-radial-gradient(circle, #ffffff05 0 25px, #7ed95725 26px 27px);
+  position: relative;
+  overflow: hidden;
+}
+
+.eg-radar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 85px;
+  height: 2px;
+  background: #9fe17e;
+  transform-origin: left;
+  animation: eg-sweep 3s linear infinite;
+}
+
+.eg-radar .eg-pulse {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #9fe17e;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 25px #9fe17e;
+}
+
+.eg-radar .eg-cross::before,
+.eg-radar .eg-cross::after {
+  content: "";
+  position: absolute;
+  background: #ffffff18;
+}
+
+.eg-radar .eg-cross::before {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+}
+
+.eg-radar .eg-cross::after {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+}
+
+.eg-scan {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 15px;
+}
+
+.eg-scan span {
+  width: 25px;
+  height: 4px;
+  background: #75bd59;
+  border-radius: 4px;
+}
+
+.eg-scan span:nth-child(2) { opacity: 0.7; }
+.eg-scan span:nth-child(3) { opacity: 0.4; }
+.eg-scan span:nth-child(4) { opacity: 0.2; }
+
+.eg-mock-forest {
+  background: radial-gradient(ellipse at 20% 30%, #668f55 0 10%, transparent 11%),
+    radial-gradient(ellipse at 70% 60%, #3e6e45 0 18%, transparent 19%),
+    linear-gradient(145deg, #2e593a, #72955c 50%, #406e48);
+}
+
+.eg-mock-disturbed {
+  background: radial-gradient(ellipse at 24% 36%, #a47a48 0 10%, transparent 11%),
+    radial-gradient(ellipse at 70% 60%, #b18a55 0 17%, transparent 18%),
+    linear-gradient(145deg, #496842, #b09a67 55%, #596c42);
+}
+
+.eg-acknowledged {
+  opacity: 0.6;
 }
 
 

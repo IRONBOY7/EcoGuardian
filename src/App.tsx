@@ -678,7 +678,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 flex flex-col text-stone-900 dark:text-stone-100 font-sans selection:bg-emerald-100 selection:text-emerald-950 transition-colors duration-300">
+    <div className="min-h-screen bg-[#f5f7f4] dark:bg-stone-950 flex flex-col text-stone-900 dark:text-stone-100 font-sans selection:bg-emerald-100 selection:text-emerald-950 transition-colors duration-300">
       {/* Top App Bar Navigation */}
       <Navbar 
         user={currentUser} 
@@ -994,24 +994,19 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* GLOBAL ECOGUARDIAN COPYRIGHT & FOOTER */}
-      <footer className="w-full bg-slate-900 text-slate-400 border-t border-slate-800 text-xs py-6 px-4 mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-[11px]">
-          <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-slate-200 font-bold">EcoGuardian™ Platform</span>
-            <span>— Smart Municipal Waste & Citizen Environmental Logistics</span>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center gap-4 text-slate-400">
-            <span>© {new Date().getFullYear()} EcoGuardian. All rights reserved.</span>
-            <span className="text-slate-700">|</span>
-            <span className="hover:text-emerald-400 cursor-pointer transition-colors">Privacy Policy</span>
-            <span className="text-slate-700">•</span>
-            <span className="hover:text-emerald-400 cursor-pointer transition-colors">Terms of Service</span>
-            <span className="text-slate-700">•</span>
-            <span className="hover:text-emerald-400 cursor-pointer transition-colors">EPA Compliance</span>
-          </div>
+      {/* GLOBAL FOOTER — reference prototype footer */}
+      <footer className="w-full bg-[#10271b] dark:bg-[#0a1a11] text-[#d7e1da] px-[8%] py-[30px] flex flex-col sm:flex-row justify-between gap-5 sm:gap-[30px] text-[11px] mt-auto">
+        <div>
+          <strong className="text-[15px] font-bold text-white">EcoGuard Ghana</strong>
+          <p className="text-[#aab9af] mt-1.5">
+            TECH FORGE Innovation Challenge • Prototype v1.0
+          </p>
+        </div>
+        <div>
+          <small className="block max-w-[450px] leading-[1.6] text-[#aab9af]">
+            Built as a student innovation prototype. Satellite detections
+            require verification before enforcement action.
+          </small>
         </div>
       </footer>
 

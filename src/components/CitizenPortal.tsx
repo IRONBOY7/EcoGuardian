@@ -14,6 +14,7 @@ import ChatBotPanel from "./ChatBotPanel";
 import { uploadFileToStorage, dbService, auth } from "../firebase";
 import { GhanaMap } from "./GhanaMap";
 import { MonitoringCoverage } from "./MonitoringCoverage";
+import { EcoHero, EcoStats, EcoAlerts, EcoAgencies, EcoWorkflow } from "./PrototypeLanding";
 import { GHANA_CAPITAL, DEFAULT_GHANA_RECYCLING_CENTERS } from "../data/ghanaLocations";
 import { GhanaianVoiceReporter } from "./GhanaianVoiceReporter";
 
@@ -834,41 +835,37 @@ export default function CitizenPortal({
                 exit={{ opacity: 0 }}
                 className="space-y-6"
               >
-                {/* Visual Welcome Banner & Tip of the day */}
-                <div className="bg-gradient-to-r from-emerald-700 to-teal-800 text-white rounded-3xl p-6 shadow-sm border border-emerald-600/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
-                  <div className="space-y-2 max-w-xl">
-                    <h2 className="text-2xl font-black tracking-tight font-sans">
-                      Welcome, Eco Guardian {user.name.split(" ")[0]}! 🌿
-                    </h2>
-                    <p className="text-emerald-100 text-xs leading-relaxed">
-                      Your environmental vigilance keeps our neighborhoods safe and beautiful. You are currently helping Ghana recover recyclables and report illegal dump spots.
-                    </p>
-                    
-                    {/* Environmental Tip box */}
-                    <div className="bg-emerald-950/40 border border-emerald-600/30 p-3.5 rounded-2xl flex items-start space-x-3 text-xs mt-3">
-                      <Sparkles className="w-4 h-4 text-amber-300 flex-shrink-0 mt-0.5 animate-pulse" />
-                      <div className="flex-1">
-                        <p className="font-bold text-amber-300 uppercase tracking-wider text-[10px] font-mono">Eco Tip of the Day</p>
-                        <p className="text-gray-100 mt-1 leading-relaxed font-sans">{ECO_TIPS[tipIndex]}</p>
-                        <button 
-                          onClick={rotateTip}
-                          className="text-[10px] text-emerald-200 hover:text-white font-bold tracking-wider uppercase mt-1 inline-flex items-center space-x-1 font-mono transition-all"
-                        >
-                          <span>Next tip</span> <ChevronRight className="w-3 h-3" />
-                        </button>
-                      </div>
+                {/* Reference prototype hero — radar monitoring coverage card */}
+                <EcoHero userName={user.name} onNavigate={setActiveTab} />
+
+                {/* Reference prototype statistics row */}
+                <EcoStats />
+
+                {/* Eco tip of the day + cleanliness score */}
+                <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-stretch">
+                  <div className="bg-[#eef5ed] dark:bg-[#152419] border-l-4 border-[#6aaa59] p-4 text-xs flex items-start gap-3">
+                    <Sparkles className="w-4 h-4 text-[#559f45] dark:text-[#7ed957] flex-shrink-0 mt-0.5 animate-pulse" />
+                    <div className="flex-1">
+                      <p className="font-extrabold text-[#17231b] dark:text-stone-100 uppercase tracking-wider text-[10px]">Eco Tip of the Day</p>
+                      <p className="text-[#4e5e53] dark:text-stone-300 mt-1 leading-relaxed">{ECO_TIPS[tipIndex]}</p>
+                      <button 
+                        onClick={rotateTip}
+                        className="text-[10px] text-[#559f45] dark:text-[#7ed957] hover:underline font-extrabold tracking-wider uppercase mt-1.5 inline-flex items-center space-x-1 transition-all cursor-pointer"
+                      >
+                        <span>Next tip</span> <ChevronRight className="w-3 h-3" />
+                      </button>
                     </div>
                   </div>
 
                   {/* Cleanliness score circle indicator */}
-                  <div className="bg-white/10 border border-white/15 p-5 rounded-2xl text-center w-full md:w-max flex flex-row md:flex-col items-center justify-center gap-4 shadow-inner">
-                    <div className="w-20 h-20 rounded-full border-4 border-amber-300 border-t-emerald-400 flex flex-col items-center justify-center relative shadow-md">
-                      <span className="text-2xl font-black font-mono tracking-tighter text-amber-300 leading-none">{communityScore}%</span>
-                      <span className="text-[7px] font-mono text-emerald-200 mt-0.5 uppercase tracking-widest font-bold">Clean</span>
+                  <div className="bg-white dark:bg-stone-900 border border-[#e1e8e1] dark:border-stone-700 rounded-[13px] p-4 text-center flex flex-row md:flex-col items-center justify-center gap-3.5">
+                    <div className="w-16 h-16 rounded-full border-4 border-amber-300 border-t-emerald-400 flex flex-col items-center justify-center relative shadow-md">
+                      <span className="text-xl font-black font-mono tracking-tighter text-amber-500 leading-none">{communityScore}%</span>
+                      <span className="text-[7px] font-mono text-emerald-600 mt-0.5 uppercase tracking-widest font-bold">Clean</span>
                     </div>
                     <div className="text-left md:text-center">
-                      <p className="text-xs text-emerald-200 font-semibold">City Cleanliness Score</p>
-                      <p className="text-[10px] text-emerald-100 font-mono mt-0.5">District Area SF-BA</p>
+                      <p className="text-xs text-stone-600 dark:text-stone-300 font-semibold">City Cleanliness Score</p>
+                      <p className="text-[10px] text-stone-400 font-mono mt-0.5">District Area SF-BA</p>
                     </div>
                   </div>
                 </div>
@@ -993,15 +990,20 @@ export default function CitizenPortal({
                   </div>
                 </div>
 
+                {/* Reference prototype sections — alerts, agencies, workflow */}
+                <EcoAlerts />
+                <EcoAgencies />
+                <EcoWorkflow />
+
                 {/* Floating mini helper assistant button */}
-                <div className="bg-slate-900 text-white rounded-3xl p-5 border border-slate-800 shadow-sm flex items-center justify-between">
+                <div className="bg-[#10271b] text-white rounded-2xl p-5 border border-[#173c28] shadow-sm flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center space-x-3.5">
-                    <div className="bg-emerald-600 p-2.5 rounded-2xl text-emerald-100">
+                    <div className="bg-[#91db70] p-2.5 rounded-xl text-[#10271b]">
                       <Sparkles className="w-5 h-5 animate-spin-slow" />
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-white">Ask EcoBot Assistant Anything</h4>
-                      <p className="text-xs text-slate-400">Not sure if an old appliance is compostable? Ask EcoBot!</p>
+                      <p className="text-xs text-[#b9cbbf]">Not sure if an old appliance is compostable? Ask EcoBot!</p>
                     </div>
                   </div>
                   <button 
@@ -1009,7 +1011,7 @@ export default function CitizenPortal({
                       // We can swap active tab to the rewards quiz or keep chatbot easily accessible
                       setActiveTab("rewards");
                     }}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4.5 py-2 rounded-xl transition-all shadow-sm"
+                    className="bg-[#91db70] hover:brightness-105 text-[#10271b] text-xs font-bold px-4 py-2.5 rounded-[9px] transition-all shadow-sm cursor-pointer"
                   >
                     Launch AI Chat Advisor
                   </button>

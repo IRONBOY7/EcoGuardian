@@ -43,6 +43,8 @@ export interface CoverageStat {
   value: string;
   label: string;
   hint: string;
+  /** Emoji icon used in the prototype statistics row. */
+  icon: string;
 }
 
 /**
@@ -50,10 +52,10 @@ export interface CoverageStat {
  * they are NOT real-world statistics.
  */
 export const COVERAGE_STATS: CoverageStat[] = [
-  { value: "24", label: "Monitoring Zones", hint: "Prototype zone count" },
-  { value: "8", label: "Regions Covered", hint: "Prototype coverage" },
-  { value: "3", label: "Active Change Alerts", hint: "Prototype alerts" },
-  { value: "7", label: "Verified Cases", hint: "Prototype verifications" },
+  { value: "24", label: "Monitoring Zones", hint: "Prototype zone count", icon: "🛰️" },
+  { value: "8", label: "Regions Covered", hint: "Prototype coverage", icon: "🗺️" },
+  { value: "3", label: "Active Change Alerts", hint: "Prototype alerts", icon: "🚨" },
+  { value: "7", label: "Verified Cases", hint: "Prototype verifications", icon: "✅" },
 ];
 
 /**
@@ -174,3 +176,39 @@ export const MONITORING_STATUS_META: Record<
 export function getMonitoringZoneById(id: string): MonitoringZone | undefined {
   return MONITORING_ZONES.find((zone) => zone.id === id);
 }
+
+/**
+ * Demo sites for the Before / After change-detection comparison
+ * (mirrors the v1.1 prototype dataset).
+ */
+export interface ComparisonSite {
+  id: "oda" | "ashanti" | "western";
+  name: string;
+  risk: "high" | "medium" | "low";
+  change: string;
+  action: string;
+}
+
+export const COMPARISON_SITES: ComparisonSite[] = [
+  {
+    id: "oda",
+    name: "Oda River area",
+    risk: "high",
+    change: "+31%",
+    action: "Field verification",
+  },
+  {
+    id: "ashanti",
+    name: "Ashanti demo site",
+    risk: "medium",
+    change: "+18%",
+    action: "Review imagery",
+  },
+  {
+    id: "western",
+    name: "Western Region demo site",
+    risk: "low",
+    change: "+8%",
+    action: "Continue monitoring",
+  },
+];
