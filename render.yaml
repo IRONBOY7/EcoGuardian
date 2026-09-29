@@ -1,0 +1,35 @@
+# EcoGuardian + EcoGuard Ghana — full-stack deploy config for Render (free tier).
+# Docs: https://render.com/docs/free
+#
+# The production server (dist/server.cjs, via `npm start`) serves the built
+# frontend AND the Express API on one port. Data persists to database.json
+# (committed seed data). Note free-tier disks are ephemeral — for durable
+# persistence across Render restarts, use a persistent disk or Firestore.
+
+services:
+  - type: web
+    name: ecoguard-ghana
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Optional: enable Gemini AI features (AI waste scanner, chat, voice).
+      # - key: GEMINI_API_KEY
+      #   sync: false
+      # Optional: wire the portals to Firebase Auth/Firestore/Storage instead
+      # of the local Express demo API. Public keys only.
+      # - key: VITE_FIREBASE_API_KEY
+      #   sync: false
+      # - key: VITE_FIREBASE_AUTH_DOMAIN
+      #   sync: false
+      # - key: VITE_FIREBASE_PROJECT_ID
+      #   sync: false
+      # - key: VITE_FIREBASE_STORAGE_BUCKET
+      #   sync: false
+      # - key: VITE_FIREBASE_MESSAGING_SENDER_ID
+      #   sync: false
+      # - key: VITE_FIREBASE_APP_ID
+      #   sync: false
