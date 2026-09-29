@@ -123,6 +123,23 @@ interface CollectorAssignment {
   completedDate?: string;
 }
 
+// EcoGuard Ghana web-app demo data (satellite monitoring dashboard)
+interface EcoAlert {
+  id: string;
+  location: string;
+  risk: "High" | "Medium" | "Low";
+  change: string;
+  date: string;
+  status: string;
+  lat: number;
+  lng: number;
+}
+
+interface EcoAgency {
+  name: string;
+  role: string;
+}
+
 interface DatabaseSchema {
   users: User[];
   reports: Report[];
@@ -132,6 +149,8 @@ interface DatabaseSchema {
   communities: Community[];
   recycling_centers: RecyclingCenter[];
   collector_assignments: CollectorAssignment[];
+  alerts: EcoAlert[];
+  agencies: EcoAgency[];
 }
 
 // Pre-seeded template data
@@ -425,6 +444,18 @@ const defaultDatabase: DatabaseSchema = {
       status: "active",
       assignedDate: "2026-07-18T11:15:00Z"
     }
+  ],
+  alerts: [
+    { id: "EG-001", location: "Amansie South, Ashanti Region", risk: "High", change: "Vegetation loss / exposed soil", date: "2026-09-21", status: "Requires verification", lat: 6.321, lng: -1.736 },
+    { id: "EG-002", location: "Prestea-Huni Valley, Western Region", risk: "Medium", change: "Land-cover change", date: "2026-09-19", status: "Under review", lat: 5.535, lng: -2.105 },
+    { id: "EG-003", location: "Atiwa, Eastern Region", risk: "Low", change: "Possible vegetation disturbance", date: "2026-09-17", status: "Monitoring", lat: 6.221, lng: -0.566 }
+  ],
+  agencies: [
+    { name: "Forestry Commission / Forest Services Division", role: "Forest-reserve protection and monitoring" },
+    { name: "Minerals Commission", role: "Mining regulation and compliance" },
+    { name: "Environmental Protection Agency (EPA)", role: "Environmental regulation and compliance" },
+    { name: "Lands Commission", role: "Land information, surveying and mapping" },
+    { name: "NAIMOS", role: "Coordination of operations against illegal mining" }
   ]
 };
 
@@ -840,6 +871,44 @@ app.put("/api/collector_assignments/:id", (req, res) => {
     return res.json({ success: true, collector_assignment: db.collector_assignments[index] });
   }
   return res.status(404).json({ success: false, message: "Collector assignment not found" });
+});
+
+// --- EcoGuard Ghana Web App API (merged satellite monitoring dashboard) ---
+
+// Health check: the web app's hero shows online/offline from this endpoint.
+app.get("/api/health", (_req, res) => res.json({ status: "online", service: "EcoGuard Ghana API" }));
+
+app.get("/api/alerts", (_req, res) => {
+  const db = readDb();
+  return res.json({ demo: true, alerts: db.alerts });
+});
+
+app.get("/api/agencies", (_req, res) => {
+  const db = readDb();
+  return res.json({ agencies: db.agencies });
+});
+
+app.get("/api/monitoring/summary", (_req, res) => {
+  const db = readDb();
+  return res.json({
+    demo: true,
+    monitoredZones: 24,
+    activeAlerts: db.alerts.length,
+    highRisk: db.alerts.filter((a) => a.risk === "High").length,
+    verified: 7
+  });
+});
+
+// Demo verification flow: flips an alert to "Field verification requested"
+// and persists it. Token enforcement can be added later (production wiring
+// idea: validate a Firebase ID token from the Authorization header).
+app.post("/api/alerts/:id/verify", (req, res) => {
+  const db = readDb();
+  const alert = db.alerts.find((a) => a.id === req.params.id);
+  if (!alert) return res.status(404).json({ message: "Alert not found" });
+  alert.status = "Field verification requested";
+  writeDb(db);
+  return res.json({ success: true, alert });
 });
 
 // --- Gemini AI Powered Features ---

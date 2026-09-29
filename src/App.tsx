@@ -11,6 +11,7 @@ import smartWasteHero from "./assets/images/smart_waste_hero_1784633199980.jpg";
 import { auth, useFirebase, db, handleFirestoreError, OperationType, dbService, sanitizeFirestoreData } from "./firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import EcoGuardGhanaApp from "./web/EcoGuardGhanaApp";
 
 export default function App() {
   // Authentication & Session
@@ -59,6 +60,29 @@ export default function App() {
   const prevReportsMapRef = useRef<Record<string, string>>({});
   const prevAnnouncementsMapRef = useRef<Record<string, boolean>>({});
   const isFirstLoadRef = useRef(true);
+
+  // EcoGuard Ghana web-app view: URL hash "#/web" opens the merged satellite
+  // monitoring website; any other hash keeps the EcoGuardian citizen portal.
+  const [webView, setWebView] = useState(() => typeof window !== "undefined" && window.location.hash.toLowerCase() === "#/web");
+
+  useEffect(() => {
+    const onHash = () => setWebView(window.location.hash.toLowerCase() === "#/web");
+    window.addEventListener("hashchange", onHash);
+    // App-shell PWA: service worker only in production builds, never in dev.
+    const isProd = (import.meta as any).env?.PROD === true;
+    if (isProd && "serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const openWebView = () => {
+    try { window.location.hash = "#/web"; } catch {}
+  };
+
+  const exitWebView = () => {
+    try { window.location.hash = "#/"; } catch {}
+  };
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -677,7 +701,9 @@ export default function App() {
     setRegPassword("");
   };
 
-  return (
+  return webView ? (
+    <EcoGuardGhanaApp onExit={exitWebView} />
+  ) : (
     <div className="min-h-screen bg-[#f5f7f4] dark:bg-stone-950 flex flex-col text-stone-900 dark:text-stone-100 font-sans selection:bg-emerald-100 selection:text-emerald-950 transition-colors duration-300">
       {/* Top App Bar Navigation */}
       <Navbar 
@@ -687,6 +713,7 @@ export default function App() {
         onSwitchRole={setActiveRole} 
         theme={theme}
         onToggleTheme={handleToggleTheme}
+        onOpenWeb={openWebView}
       />
 
       {/* Main Container Stage */}

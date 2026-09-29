@@ -1,6 +1,6 @@
 import React from "react";
 import { User, UserRole } from "../types";
-import { LogOut, Shield, Truck, UserCheck, Sun, Moon } from "lucide-react";
+import { LogOut, Shield, Truck, UserCheck, Sun, Moon, Globe2 } from "lucide-react";
 
 interface NavbarProps {
   user: User | null;
@@ -9,9 +9,10 @@ interface NavbarProps {
   onSwitchRole: (role: UserRole) => void;
   theme: "light" | "dark";
   onToggleTheme: () => void;
+  onOpenWeb: () => void;
 }
 
-export default function Navbar({ user, onLogout, activeRole, onSwitchRole, theme, onToggleTheme }: NavbarProps) {
+export default function Navbar({ user, onLogout, activeRole, onSwitchRole, theme, onToggleTheme, onOpenWeb }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 bg-[#10271b] dark:bg-[#0a1a11] text-white h-[72px] flex items-center gap-6 px-4 lg:px-[6%] shadow-[0_2px_15px_rgba(0,0,0,0.13)] transition-colors duration-300">
       {/* Brand Logo & Name — reference topbar brand */}
@@ -36,6 +37,17 @@ export default function Navbar({ user, onLogout, activeRole, onSwitchRole, theme
       </div>
 
       <div className="flex items-center gap-3">
+        {/* EcoGuard Ghana Website — merged satellite monitoring web app */}
+        <button
+          onClick={onOpenWeb}
+          className="px-3 py-2.5 rounded-xl border border-[#2f5a42] bg-white/5 text-[#c9d9ce] hover:text-white hover:bg-white/10 hover:border-[#7ed957] transition-all cursor-pointer flex items-center gap-1.5"
+          title="Open EcoGuard Ghana Website (satellite monitoring)"
+          aria-label="Open EcoGuard Ghana Website"
+        >
+          <Globe2 className="w-4.5 h-4.5 text-[#9fe17e]" />
+          <span className="hidden md:inline text-[11px] font-bold">Satellite Website</span>
+        </button>
+
         {/* High Contrast Accessibility Sun/Moon Theme Toggle */}
         <button
           onClick={onToggleTheme}

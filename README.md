@@ -269,3 +269,72 @@ PROJECT LINKS
 https://github.com/Ayisha987Issaka/EcoGuardian?utm_source=chatgpt.com
 **lIVE DEMO**
 https://ecoguardian.ai.studio
+
+---
+
+EcoGuard Ghana Website (merged satellite monitoring view)
+==========
+
+This repository also contains the full **EcoGuard Ghana** satellite-monitoring
+web app (previously its own React + Vite project), merged in so both products
+live in one codebase:
+
+- **EcoGuardian portal** — the citizen / collector / admin waste-management
+  platform described above (default view).
+- **EcoGuard Ghana website** — the public satellite-monitoring dashboard with a
+  live map (Esri World Imagery + NASA GIBS daily MODIS mosaics), before/after
+  change detection (EOX Sentinel-2 mosaics), an alert centre with a demo
+  field-verification flow, and an Earth Engine bring-your-own-account gate.
+
+View switching
+--------------
+- Open the site, then click **Satellite Website** in the top navigation bar, or
+  visit the URL with the hash `#/web` (for example `https://host/#/web`).
+- The web app's menu includes a **Citizen Portal** link to switch back.
+- The chosen view is driven by the URL hash, so either view can be deep-linked.
+
+Demo API (merged backend)
+-------------------------
+`server.ts` (Express) powers both products on one port:
+
+- Portal API: `/api/auth/*`, `/api/reports`, `/api/notifications`,
+  `/api/rewards`, `/api/communities`, `/api/recycling_centers`,
+  `/api/collector_assignments`, `/api/ai-chat`, `/api/analyze-image`, …
+- Web-app API: `/api/health`, `/api/alerts`, `/api/agencies`,
+  `/api/monitoring/summary`, `POST /api/alerts/:id/verify`.
+
+All data persists to `database.json` (collections auto-upgrade on first read if
+missing, so existing files keep working). The demo alert `status` persists
+across server restarts.
+
+PWA
+---
+- `public/manifest.webmanifest`, icons (`icon-192.png`, `icon-512.png`,
+  `icon-180.png`) and `public/sw.js` make the app installable.
+- The service worker is registered **only in production builds**
+  (`import.meta.env.PROD`). Bump the `CACHE` name in `sw.js` when releasing
+  new builds so old caches are purged.
+
+Run locally
+-----------
+```
+npm install
+npm run dev        # http://localhost:3000 (Vite + Express, one port)
+```
+
+Firebase
+--------
+The portal uses optional Firebase (Auth + Firestore + Storage) when the
+`VITE_FIREBASE_*` env vars are configured; without them it runs fully on the
+local Express API. The web app likewise falls back to the demo API when
+Firebase is not configured. Google Earth Engine is always bring-your-own-account
+(each user stores their own Client ID in browser localStorage).
+
+Sources
+-------
+- Oda River: Abugre et al. (2025) published research.
+- Apamprama Forest Reserve: Mantey & Otoo (UMaT) UAV/Google Earth assessment.
+- Tano Offin, Upper Wassaw, custom: prototype estimates from real Sentinel-2
+  annual mosaics (vegetation + bare-soil proxies) — indicative, not field-validated.
+- Imagery: EOX Sentinel-2 cloudless mosaics (contains modified Copernicus
+  Sentinel data); Esri World Imagery; NASA EOSDIS GIBS (MODIS Terra).
